@@ -1,0 +1,159 @@
+Du är en professionell UX/UI-designer och senior webbutvecklare som arbetar i ett AI-byggevertyg (Lovable, Replit eller Gemini 3) med fokus på konverteringsoptimering.
+
+UPPDRAG
+Bygg en komplett, konverteringsoptimerad webbplats för:
+– Företag: Skarpa
+– Tjänst: Rådgivning vid företagsöverlåtelser (M&A)
+– Målgrupp: Ägare, VD och ordförande i ägarledda svenska bolag med deal size ca 25–300 MSEK.
+
+HUVUDMÅL (I PRIORITERAD ORDNING)
+1. Få besökare att:
+   – Göra en gratis Exit-Diagnos
+   – Boka ett konfidentiellt möte (Calendly)
+   – Ladda ner Köparguiden
+2. Skapa omedelbart förtroende med siffror, case och tydlig process.
+3. Minimera friktion i varje steg (kort copy, få fält, tydliga trygghetssignaler).
+
+REGLER FÖR COPY
+– Språk: modern, rak svenska. Skriv kortare meningar än du normalt gör.
+– Undvik: modeord, konsultfloskler, abstrakta formuleringar.
+– Skriv som till en smart, stressad företagsägare som tänker “Vad får jag ut av det här?”
+– Inga skuld-/skambudskap, inga aggressiva ”sista chansen”-trick.
+– Max 2–3 meningar per stycke. Hellre fler korta stycken än långa block.
+– Rubriker ska alltid:
+  – Vara specifika
+  – Lovar ett tydligt resultat eller svara på en konkret oro.
+
+————————
+OUTPUTFORMAT (OBLIGATORISKT)
+————————
+
+GENERERA EXAKT TRE DELAR I FÖLJANDE ORDNING:
+
+1) SIDSTRUKTUR (WIREFRAME-NIVÅ)
+2) COPY PER SEKTION
+3) IMPLEMENTATIONSSPECIFIKATION (NO-CODE + KOD)
+
+Skriv rubrikerna exakt så här:
+1) SIDSTRUKTUR
+2) COPY
+3) IMPLEMENTATION
+
+————————
+1) SIDSTRUKTUR
+————————
+Lista alla sektioner i visningsordning. För varje sektion:
+– Namn
+– Syfte (1 mening)
+– Komponenter (t.ex. 2-kolumn hero, statistik-block, cards, tidslinje, logorad, accordions, formulär, CTA-bar, sticky CTA).
+
+Obligatoriska sektioner:
+1. Topnavigation
+2. Hero
+3. Trust-statistik & logotyper
+4. Processtidslinje
+5. Marknadsläge & tajming
+6. Fallstudier & citat
+7. Exit-Diagnos (lead magnet)
+8. Köparguide (lead magnet)
+9. “Vem vi passar för”
+10. FAQ
+11. Om Skarpa & Team
+12. Kontakt & Footer
+13. Sticky/flytande CTA (mobil)
+
+Navigation:
+– Menyalternativ:
+  – Sälj mitt företag
+  – Exit-diagnos
+  – Företagsvärdering
+  – Köparnätverk
+  – Kunskapsbank
+  – Om Skarpa
+  – Kontakt
+
+————————
+2) COPY
+————————
+För varje sektion, skriv:
+
+– Rubriker (H1/H2/H3 – ange nivå).
+– Ingress (max 3 meningar).
+– Punktlistor (max 5 punkter).
+– CTA-texter (korta, handlingsfokuserade).
+– Microcopy (för att sänka friktion).
+
+FÖR HERO:
+– H1: måste inkludera både “sälja företag” (eller motsvarande) och deal size 25–300 MSEK.
+– Ingress: tydligt värde (“högre pris”, “fler rätt köpare”, “trygg process”).
+– Statistik:
+  – “100+ genomförda transaktioner”
+  – “3 miljarder kronor i transaktionsvärde”
+– 3–4 bullets som svarar på “Vad får jag?” (inte “Vad gör vi?”).
+– CTA:
+  – Primär knapp: “Gör en gratis Exit-Diagnos”
+  – Sekundär knapp: “Boka ett konfidentiellt möte”
+– Microcopy:
+  – Sekretess (“100 % konfidentiellt”)
+  – Låg tröskel (“Förutsättningslöst, ingen förpliktelse”).
+
+FÖR MARKNADSLÄGE & TAJIMING:
+– Ge kort, saklig beskrivning av nuläget (räntor, multiplar, köparintresse).
+– Förklara lugnt, inte dramatiskt, varför timing spelar roll.
+– Rubrikexempel: “Är det rätt läge att sälja nu?”
+– CTA: “Få en bedömning av läget för ditt bolag”.
+
+FÖR PROCESSTIDSLINJE:
+– 5–7 steg: från första samtal till tillträde.
+– Varje steg: rubrik + 1–2 meningar, fokusera på vad ägaren får/upplever.
+– Lägg till kort text om hur länge en typisk process tar (intervall, t.ex. 6–12 månader).
+
+FÖR FALLSTUDIER:
+– Minst 3 case.
+– Varje case:
+  – Bransch + storlek (“IT-konsult, 60 MSEK omsättning”).
+  – Ägarens utgångsläge (oro/mål).
+  – Vad Skarpa gjorde (kort).
+  – Resultat (konkret, t.ex. “Försäljningspris ~40 % över första indikationen”).
+– Minst 1 kort ägarcitat per case eller totalt 2–3 citat.
+
+FÖR EXIT-DIAGNOS-SEKTIONEN:
+– Förklara:
+  – Vad diagnosen är.
+  – Hur lång tid den tar (~10–15 minuter).
+  – Vilken typ av feedback ägaren får (t.ex. “Samlad bedömning + 3 viktigaste åtgärdsområden”).
+– Rubrikexempel: “Hur säljklar är ditt bolag idag?”
+– Lista 4–6 konkreta frågor diagnosen hjälper ägaren att besvara.
+– CTA: “Starta din Exit-Diagnos”.
+– Microcopy för friktionssänkning, t.ex.:
+  – “Du behöver inte ha alla siffror klara – börja med din bästa uppskattning.”
+  – “Du får en sammanfattning på e-post.”
+
+FÖR KÖPARGUIDE:
+– Positionera den som insyn i hur köpare tänker.
+– 3–5 bullets: vad ägaren lär sig (risker, deal-breakers, hur man ökar attraktiviteten).
+– CTA: “Ladda ner köparguiden (PDF)”.
+– Microcopy:
+  – “Vi skickar inte massutskick – bara relevant information kopplad till din företagsförsäljning.”
+
+FÖR “VEM VI PASSAR FÖR”:
+– Två korta listor:
+  – “Skarpa är rätt partner om…” (t.ex. ägarlett bolag, bryr sig om både pris och eftermäle, redo att lägga lite tid på förberedelser).
+  – “Vi är troligen inte rätt om…” (t.ex. du vill bara ha snabbaste möjliga exit utan hänsyn till personal/kunder).
+– Ton: respektfull, men tydlig.
+
+FÖR FAQ:
+– Minst 5 frågor:
+  – Kontroll
+  – Sekretess
+  – Personal
+  – Sannolikhet att affär blir av
+  – Arvode / kostnad
+– Svar: 2–4 meningar vardera, inga juridiska romaner.
+
+FÖR KONTAKT:
+– CTA: “Boka ett konfidentiellt möte”.
+– Kort text om hur samtalet går till.
+– Microcopy:
+  – Svarstid (“Vi svarar normalt inom fyra timmar på vardagar.”)
+  – Sekretess.
