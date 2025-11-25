@@ -1,24 +1,55 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { BookOpen, Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { insertBuyerGuideRequestSchema, type InsertBuyerGuideRequest } from "@shared/schema";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
 export default function BuyerGuide() {
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
   const { toast } = useToast();
 
-  const handleDownload = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Buyer guide download requested for:", { name, email });
-    toast({
-      title: "Köparguiden är på väg!",
-      description: "Vi skickar PDF:en till din e-post inom några minuter.",
-    });
-    setEmail("");
-    setName("");
+  const form = useForm<InsertBuyerGuideRequest>({
+    resolver: zodResolver(insertBuyerGuideRequestSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+    },
+  });
+
+  const submitMutation = useMutation({
+    mutationFn: async (data: InsertBuyerGuideRequest) => {
+      const res = await apiRequest("POST", "/api/buyer-guide", data);
+      return await res.json();
+    },
+    onSuccess: (data: any) => {
+      toast({
+        title: "Köparguiden är på väg!",
+        description: data.message || "Vi skickar PDF:en till din e-post inom några minuter.",
+      });
+      form.reset();
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Ett fel uppstod",
+        description: error.message || "Kunde inte skicka förfrågan. Försök igen senare.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const onSubmit = (data: InsertBuyerGuideRequest) => {
+    submitMutation.mutate(data);
   };
 
   return (
@@ -67,43 +98,58 @@ export default function BuyerGuide() {
             <h3 className="text-xl font-semibold text-foreground mb-6">
               Ladda ner Köparguiden (PDF)
             </h3>
-            <form onSubmit={handleDownload} className="space-y-4">
-              <div>
-                <Label htmlFor="guide-name">Namn</Label>
-                <Input
-                  id="guide-name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Anna Andersson"
-                  required
-                  data-testid="input-guide-name"
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Namn</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Anna Andersson"
+                          data-testid="input-guide-name"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              </div>
-              <div>
-                <Label htmlFor="guide-email">E-post</Label>
-                <Input
-                  id="guide-email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="anna@mittforetag.se"
-                  required
-                  data-testid="input-guide-email"
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>E-post</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="email"
+                          placeholder="anna@mittforetag.se"
+                          data-testid="input-guide-email"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              </div>
-              <Button
-                type="submit"
-                className="w-full"
-                size="lg"
-                data-testid="button-download-guide"
-              >
-                <Download className="mr-2" size={18} />
-                Skicka guiden till min e-post
-              </Button>
-              <p className="text-xs text-muted-foreground text-center">
-                Vi skickar inte massutskick – bara relevant information kopplad till din företagsförsäljning.
-              </p>
-            </form>
+                <Button
+                  type="submit"
+                  className="w-full"
+                  size="lg"
+                  disabled={submitMutation.isPending || !form.formState.isValid}
+                  data-testid="button-download-guide"
+                >
+                  <Download className="mr-2" size={18} />
+                  {submitMutation.isPending ? "Skickar..." : "Skicka guiden till min e-post"}
+                </Button>
+                <p className="text-xs text-muted-foreground text-center">
+                  Vi skickar inte massutskick – bara relevant information kopplad till din företagsförsäljning.
+                </p>
+              </form>
+            </Form>
           </div>
         </div>
       </div>

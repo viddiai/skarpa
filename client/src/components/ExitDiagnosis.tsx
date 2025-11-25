@@ -1,49 +1,101 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { ClipboardCheck, ArrowRight, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { insertExitDiagnosisSchema, type InsertExitDiagnosis } from "@shared/schema";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
 export default function ExitDiagnosis() {
   const [step, setStep] = useState(0);
-  const [formData, setFormData] = useState({
-    companyName: "",
-    industry: "",
-    revenue: "",
-    profitMargin: "",
-    yearsInBusiness: "",
-    email: "",
-    name: "",
-    phone: "",
-  });
   const { toast } = useToast();
+
+  const form = useForm<InsertExitDiagnosis>({
+    resolver: zodResolver(insertExitDiagnosisSchema),
+    defaultValues: {
+      companyName: "",
+      industry: "",
+      revenue: "",
+      profitMargin: "",
+      yearsInBusiness: "",
+      email: "",
+      name: "",
+      phone: "",
+    },
+  });
 
   const totalSteps = 3;
   const progress = ((step + 1) / totalSteps) * 100;
 
-  const handleNext = () => {
-    if (step < totalSteps - 1) {
-      setStep(step + 1);
-    } else {
-      console.log("Exit diagnosis submitted:", formData);
+  const submitMutation = useMutation({
+    mutationFn: async (data: InsertExitDiagnosis) => {
+      const res = await apiRequest("POST", "/api/exit-diagnosis", data);
+      return await res.json();
+    },
+    onSuccess: (data: any) => {
       toast({
         title: "Tack för din Exit-Diagnos!",
-        description: "Vi skickar en sammanfattning till din e-post inom 24 timmar.",
+        description: data.message || "Vi skickar en sammanfattning till din e-post inom 24 timmar.",
       });
-      // Reset form
-      setFormData({
-        companyName: "",
-        industry: "",
-        revenue: "",
-        profitMargin: "",
-        yearsInBusiness: "",
-        email: "",
-        name: "",
-        phone: "",
-      });
+      form.reset();
       setStep(0);
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Ett fel uppstod",
+        description: error.message || "Kunde inte skicka diagnos. Försök igen senare.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Get fields for current step
+  const getStepFields = (stepIndex: number): (keyof InsertExitDiagnosis)[] => {
+    switch (stepIndex) {
+      case 0:
+        return ["companyName", "industry", "revenue"];
+      case 1:
+        return ["profitMargin", "yearsInBusiness"];
+      case 2:
+        return ["name", "email", "phone"];
+      default:
+        return [];
+    }
+  };
+
+  // Check if current step has errors
+  const isStepValid = async (stepIndex: number): Promise<boolean> => {
+    const fields = getStepFields(stepIndex);
+    const result = await form.trigger(fields);
+    return result;
+  };
+
+  const handleNext = async () => {
+    if (step < totalSteps - 1) {
+      const isValid = await isStepValid(step);
+      if (isValid) {
+        setStep(step + 1);
+      }
+    } else {
+      // Validate final step before submission
+      const isValid = await isStepValid(step);
+      if (isValid) {
+        form.handleSubmit((data) => {
+          submitMutation.mutate(data);
+        })();
+      }
     }
   };
 
@@ -51,6 +103,12 @@ export default function ExitDiagnosis() {
     if (step > 0) {
       setStep(step - 1);
     }
+  };
+
+  // Check if current step has any errors
+  const currentStepHasErrors = () => {
+    const fields = getStepFields(step);
+    return fields.some(field => form.formState.errors[field]);
   };
 
   return (
@@ -76,141 +134,185 @@ export default function ExitDiagnosis() {
               Steg {step + 1} av {totalSteps}
             </p>
 
-            {step === 0 && (
-              <div className="space-y-6">
-                <h3 className="text-xl font-semibold text-foreground mb-6">
-                  Om ditt företag
-                </h3>
-                <div>
-                  <Label htmlFor="companyName">Företagsnamn</Label>
-                  <Input
-                    id="companyName"
-                    value={formData.companyName}
-                    onChange={(e) =>
-                      setFormData({ ...formData, companyName: e.target.value })
-                    }
-                    placeholder="AB Svenska Företag"
-                    data-testid="input-company-name"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="industry">Bransch</Label>
-                  <Input
-                    id="industry"
-                    value={formData.industry}
-                    onChange={(e) =>
-                      setFormData({ ...formData, industry: e.target.value })
-                    }
-                    placeholder="T.ex. IT-konsult, tillverkning, handel"
-                    data-testid="input-industry"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="revenue">Omsättning senaste året (MSEK)</Label>
-                  <Input
-                    id="revenue"
-                    type="number"
-                    value={formData.revenue}
-                    onChange={(e) =>
-                      setFormData({ ...formData, revenue: e.target.value })
-                    }
-                    placeholder="50"
-                    data-testid="input-revenue"
-                  />
-                  <p className="text-xs text-muted-foreground mt-2">
-                    Du behöver inte ha exakta siffror – din bästa uppskattning räcker
-                  </p>
-                </div>
-              </div>
-            )}
+            <Form {...form}>
+              <form className="space-y-6">
+                {step === 0 && (
+                  <div className="space-y-6">
+                    <h3 className="text-xl font-semibold text-foreground mb-6">
+                      Om ditt företag
+                    </h3>
+                    <FormField
+                      control={form.control}
+                      name="companyName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Företagsnamn</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="AB Svenska Företag"
+                              data-testid="input-company-name"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="industry"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Bransch</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="T.ex. IT-konsult, tillverkning, handel"
+                              data-testid="input-industry"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="revenue"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Omsättning senaste året (MSEK)</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              placeholder="50"
+                              data-testid="input-revenue"
+                              {...field}
+                            />
+                          </FormControl>
+                          <p className="text-xs text-muted-foreground mt-2">
+                            Du behöver inte ha exakta siffror – din bästa uppskattning räcker
+                          </p>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                )}
 
-            {step === 1 && (
-              <div className="space-y-6">
-                <h3 className="text-xl font-semibold text-foreground mb-6">
-                  Ekonomi & verksamhet
-                </h3>
-                <div>
-                  <Label htmlFor="profitMargin">Rörelsemarginal (%)</Label>
-                  <Input
-                    id="profitMargin"
-                    type="number"
-                    value={formData.profitMargin}
-                    onChange={(e) =>
-                      setFormData({ ...formData, profitMargin: e.target.value })
-                    }
-                    placeholder="10"
-                    data-testid="input-profit-margin"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="yearsInBusiness">Antal år i drift</Label>
-                  <Input
-                    id="yearsInBusiness"
-                    type="number"
-                    value={formData.yearsInBusiness}
-                    onChange={(e) =>
-                      setFormData({ ...formData, yearsInBusiness: e.target.value })
-                    }
-                    placeholder="15"
-                    data-testid="input-years"
-                  />
-                </div>
-              </div>
-            )}
+                {step === 1 && (
+                  <div className="space-y-6">
+                    <h3 className="text-xl font-semibold text-foreground mb-6">
+                      Ekonomi & verksamhet
+                    </h3>
+                    <FormField
+                      control={form.control}
+                      name="profitMargin"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Rörelsemarginal (%)</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              placeholder="10"
+                              data-testid="input-profit-margin"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="yearsInBusiness"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Antal år i drift</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              placeholder="15"
+                              data-testid="input-years"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                )}
 
-            {step === 2 && (
-              <div className="space-y-6">
-                <h3 className="text-xl font-semibold text-foreground mb-6">
-                  Dina kontaktuppgifter
-                </h3>
-                <div>
-                  <Label htmlFor="name">Namn</Label>
-                  <Input
-                    id="name"
-                    value={formData.name}
-                    onChange={(e) =>
-                      setFormData({ ...formData, name: e.target.value })
-                    }
-                    placeholder="Anna Andersson"
-                    data-testid="input-name"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="email">E-post</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) =>
-                      setFormData({ ...formData, email: e.target.value })
-                    }
-                    placeholder="anna@mittforetag.se"
-                    data-testid="input-email"
-                  />
-                  <p className="text-xs text-muted-foreground mt-2">
-                    Vi skickar din sammanfattning hit inom 24 timmar
-                  </p>
-                </div>
-                <div>
-                  <Label htmlFor="phone">Telefon (frivilligt)</Label>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    value={formData.phone}
-                    onChange={(e) =>
-                      setFormData({ ...formData, phone: e.target.value })
-                    }
-                    placeholder="070-123 45 67"
-                    data-testid="input-phone"
-                  />
-                </div>
-                <div className="bg-muted/50 rounded-lg p-4">
-                  <p className="text-sm text-muted-foreground">
-                    Vi skickar inte massutskick – bara relevant information kopplad till din företagsförsäljning.
-                  </p>
-                </div>
-              </div>
-            )}
+                {step === 2 && (
+                  <div className="space-y-6">
+                    <h3 className="text-xl font-semibold text-foreground mb-6">
+                      Dina kontaktuppgifter
+                    </h3>
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Namn</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="Anna Andersson"
+                              data-testid="input-name"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>E-post</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="email"
+                              placeholder="anna@mittforetag.se"
+                              data-testid="input-email"
+                              {...field}
+                            />
+                          </FormControl>
+                          <p className="text-xs text-muted-foreground mt-2">
+                            Vi skickar din sammanfattning hit inom 24 timmar
+                          </p>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="phone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Telefon (frivilligt)</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="tel"
+                              placeholder="070-123 45 67"
+                              data-testid="input-phone"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <div className="bg-muted/50 rounded-lg p-4">
+                      <p className="text-sm text-muted-foreground">
+                        Vi skickar inte massutskick – bara relevant information kopplad till din företagsförsäljning.
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </form>
+            </Form>
           </div>
 
           <div className="flex gap-4">
@@ -218,6 +320,7 @@ export default function ExitDiagnosis() {
               <Button
                 variant="outline"
                 onClick={handleBack}
+                disabled={submitMutation.isPending}
                 data-testid="button-back"
               >
                 <ArrowLeft className="mr-2" size={16} />
@@ -227,10 +330,11 @@ export default function ExitDiagnosis() {
             <Button
               className="flex-1"
               onClick={handleNext}
+              disabled={submitMutation.isPending}
               data-testid={step === totalSteps - 1 ? "button-submit-diagnosis" : "button-next"}
             >
-              {step === totalSteps - 1 ? "Skicka diagnos" : "Nästa"}
-              {step < totalSteps - 1 && <ArrowRight className="ml-2" size={16} />}
+              {submitMutation.isPending ? "Skickar..." : (step === totalSteps - 1 ? "Skicka diagnos" : "Nästa")}
+              {step < totalSteps - 1 && !submitMutation.isPending && <ArrowRight className="ml-2" size={16} />}
             </Button>
           </div>
         </div>
