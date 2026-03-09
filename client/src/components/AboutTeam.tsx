@@ -40,7 +40,7 @@ export default function AboutTeam() {
               Vi tror att en företagsförsäljning ska genomföras med omsorg om både ekonomiskt resultat och vad som händer med företaget efteråt. Därför tar vi oss tid att förstå din verksamhet och hitta köpare som passar.
             </p>
             <p>
-              Vårt fokus är svenska bolag med omsättning 25–300 MSEK inom IT, tillverkning, handel och tjänsteföretag.
+              Vårt fokus är svenska bolag med omsättning 40–450 MSEK inom IT, tillverkning, handel och tjänsteföretag.
             </p>
           </div>
         </div>

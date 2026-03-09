@@ -25,7 +25,7 @@ export default function Hero() {
             Sälj ditt företag till rätt köpare och rätt pris
           </h1>
           <p className="text-lg md:text-xl text-foreground/80 leading-relaxed mb-8">
-            Vi hjälper ägare av svenska bolag (25–300 MSEK) att genomföra företagsöverlåtelser med högre pris, fler rätt köpare och en trygg process.
+            Vi hjälper ägare av svenska bolag (40–450 MSEK) att genomföra företagsöverlåtelser med högre pris, fler rätt köpare och en trygg process.
           </p>
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-10">

@@ -30,7 +30,7 @@ export default function Footer() {
           <div>
             <h3 className="text-2xl font-bold text-foreground mb-4">Skarpa</h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Professionell rådgivning vid företagsöverlåtelser för svenska bolag (25–300 MSEK).
+              Professionell rådgivning vid företagsöverlåtelser för svenska bolag (40–450 MSEK).
             </p>
           </div>
 
