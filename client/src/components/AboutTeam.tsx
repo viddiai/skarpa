@@ -1,24 +1,7 @@
-import { Card } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import maleConsultantImage from "@assets/generated_images/male_consultant_headshot.png";
-import femaleConsultantImage from "@assets/generated_images/female_consultant_headshot.png";
+import johanImage from "@assets/johan_forsen.jpeg";
 
 export default function AboutTeam() {
-  const team = [
-    {
-      name: "Erik Bergström",
-      role: "Grundare & Senior Rådgivare",
-      image: maleConsultantImage,
-      bio: "15+ år av M&A-rådgivning, tidigare corporate finance i storbank. Har genomfört över 60 transaktioner inom IT, industri och handel.",
-    },
-    {
-      name: "Sara Lindqvist",
-      role: "Partner & Senior Rådgivare",
-      image: femaleConsultantImage,
-      bio: "10+ år av företagsvärderingar och företagsförsäljningar. Specialist på familjebolag och ägarskiften mellan generationer.",
-    },
-  ];
-
   return (
     <section id="about" className="py-16 md:py-24 bg-background">
       <div className="max-w-6xl mx-auto px-6 md:px-12">
@@ -45,31 +28,23 @@ export default function AboutTeam() {
           </div>
         </div>
 
-        <div className="mb-12">
-          <h3 className="text-2xl font-semibold text-foreground mb-8 text-center">
-            Vårt team
+        {/* Johan Forsén — single founder profile */}
+        <div className="max-w-2xl mx-auto text-center">
+          <Avatar className="w-48 h-48 mx-auto mb-6 border-4 border-card shadow-lg">
+            <AvatarImage src={johanImage} alt="Johan Forsén" />
+            <AvatarFallback>JF</AvatarFallback>
+          </Avatar>
+          <h3 className="text-2xl font-semibold text-foreground mb-2">
+            Johan Forsén
           </h3>
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {team.map((member, index) => (
-              <Card
-                key={index}
-                className="p-8 text-center hover-elevate transition-all duration-300"
-                data-testid={`team-member-${index}`}
-              >
-                <Avatar className="w-32 h-32 mx-auto mb-6 border-4 border-card">
-                  <AvatarImage src={member.image} alt={member.name} />
-                  <AvatarFallback>{member.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                </Avatar>
-                <h4 className="text-xl font-semibold text-foreground mb-2">
-                  {member.name}
-                </h4>
-                <p className="text-sm text-primary mb-4">{member.role}</p>
-                <p className="text-muted-foreground leading-relaxed">
-                  {member.bio}
-                </p>
-              </Card>
-            ))}
-          </div>
+          <p className="text-primary font-medium mb-4">
+            Partner at Skarpa AB | CDI Global
+          </p>
+          <p className="text-muted-foreground leading-relaxed max-w-lg mx-auto">
+            Erfaren M&A-rådgivare med gedigen bakgrund inom företagsöverlåtelser
+            och strategisk rådgivning för medelstora svenska bolag. Medlem i CDI
+            Global, ett internationellt nätverk av oberoende M&A-rådgivare.
+          </p>
         </div>
       </div>
     </section>
