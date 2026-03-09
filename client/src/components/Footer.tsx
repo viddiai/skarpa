@@ -14,7 +14,7 @@ export default function Footer() {
       { label: "Köparnätverk", id: "cases" },
     ],
     resurser: [
-      { label: "Köparguiden", id: "koparguide" },
+      { label: "Säljarguiden", id: "koparguide" },
       { label: "Vanliga frågor", id: "faq" },
     ],
     företag: [

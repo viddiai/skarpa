@@ -34,7 +34,7 @@ export default function BuyerGuide() {
     },
     onSuccess: (data: any) => {
       toast({
-        title: "Köparguiden är på väg!",
+        title: "Säljarguiden är på väg!",
         description: data.message || "Vi skickar PDF:en till din e-post inom några minuter.",
       });
       form.reset();
@@ -60,7 +60,7 @@ export default function BuyerGuide() {
             <div className="inline-flex items-center gap-2 text-primary mb-4">
               <BookOpen size={24} />
               <h2 className="text-3xl md:text-4xl font-semibold text-foreground">
-                Köparguiden
+                Säljarguiden
               </h2>
             </div>
             <p className="text-lg text-foreground/80 leading-relaxed mb-6">
@@ -96,7 +96,7 @@ export default function BuyerGuide() {
 
           <div className="bg-card border border-card-border rounded-lg p-8">
             <h3 className="text-xl font-semibold text-foreground mb-6">
-              Ladda ner Köparguiden (PDF)
+              Ladda ner Säljarguiden (PDF)
             </h3>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">

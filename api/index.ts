@@ -39,7 +39,7 @@ app.post("/api/buyer-guide", async (req: Request, res: Response) => {
     res.json({
       success: true,
       message:
-        "Köparguiden är på väg! Vi skickar PDF:en till din e-post inom några minuter.",
+        "Säljarguiden är på väg! Vi skickar PDF:en till din e-post inom några minuter.",
       id: request.id,
     });
   } catch (error) {

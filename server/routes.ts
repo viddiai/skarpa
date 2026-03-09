@@ -48,7 +48,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.json({ 
         success: true, 
-        message: "Köparguiden är på väg! Vi skickar PDF:en till din e-post inom några minuter.",
+        message: "Säljarguiden är på väg! Vi skickar PDF:en till din e-post inom några minuter.",
         id: request.id 
       });
     } catch (error) {
