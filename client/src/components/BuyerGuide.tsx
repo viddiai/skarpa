@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { BookOpen, Download } from "lucide-react";
+import { Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
@@ -15,6 +15,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import BookCover from "./BookCover";
 
 export default function BuyerGuide() {
   const { toast } = useToast();
@@ -54,102 +55,110 @@ export default function BuyerGuide() {
 
   return (
     <section id="koparguide" className="py-16 md:py-24 bg-muted/30">
-      <div className="max-w-4xl mx-auto px-6 md:px-12">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          <div>
-            <div className="inline-flex items-center gap-2 text-primary mb-4">
-              <BookOpen size={24} />
-              <h2 className="text-3xl md:text-4xl font-semibold text-foreground">
+      <div className="max-w-5xl mx-auto px-6 md:px-12">
+        {/* Outer card wrapper — like the Portalfabriken reference */}
+        <div className="bg-card border border-card-border rounded-2xl p-8 md:p-12 shadow-sm">
+          <div className="grid md:grid-cols-[2fr_3fr] gap-8 md:gap-12 items-center">
+            {/* Left column — Book cover */}
+            <div className="flex justify-center">
+              <BookCover className="w-56 md:w-64 lg:w-72" />
+            </div>
+
+            {/* Right column — Content + form */}
+            <div>
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight mb-4">
                 Säljarguiden
               </h2>
+
+              <p className="text-lg text-foreground/80 leading-relaxed mb-6">
+                Få insyn i hur köpare tänker och vad de letar efter. En 18-sidig
+                guide baserad på hundratals genomförda transaktioner.
+              </p>
+
+              <h3 className="font-semibold text-foreground mb-4">
+                Du lär dig bland annat:
+              </h3>
+              <ul className="space-y-2.5 text-foreground/80 mb-8">
+                <li className="flex items-start gap-3">
+                  <span className="mt-0.5 text-primary font-bold">•</span>
+                  <span>Vilka risker köpare identifierar först</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="mt-0.5 text-primary font-bold">•</span>
+                  <span>Vanligaste "deal-breakers" i due diligence</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="mt-0.5 text-primary font-bold">•</span>
+                  <span>Hur du ökar företagets attraktivitet</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="mt-0.5 text-primary font-bold">•</span>
+                  <span>Vad som påverkar värderingen mest</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="mt-0.5 text-primary font-bold">•</span>
+                  <span>Skillnaden mellan strategiska och finansiella köpare</span>
+                </li>
+              </ul>
+
+              {/* Inline form — flowing naturally below content */}
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="sr-only">Namn</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="Ditt namn"
+                              data-testid="input-guide-name"
+                              className="bg-background"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="sr-only">E-post</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="email"
+                              placeholder="Din e-postadress"
+                              data-testid="input-guide-email"
+                              className="bg-background"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <Button
+                    type="submit"
+                    size="lg"
+                    className="w-full sm:w-auto px-8"
+                    disabled={submitMutation.isPending || !form.formState.isValid}
+                    data-testid="button-download-guide"
+                  >
+                    <Download className="mr-2" size={18} />
+                    {submitMutation.isPending ? "Skickar..." : "Hämta guiden"}
+                  </Button>
+                  <p className="text-xs text-muted-foreground">
+                    Vi behandlar dina uppgifter enligt vår integritetspolicy.
+                  </p>
+                </form>
+              </Form>
             </div>
-            <p className="text-lg text-foreground/80 leading-relaxed mb-6">
-              Få insyn i hur köpare tänker och vad de letar efter. En 18-sidig guide baserad på hundratals genomförda transaktioner.
-            </p>
-
-            <h3 className="font-semibold text-foreground mb-4">
-              Du lär dig bland annat:
-            </h3>
-            <ul className="space-y-3 text-foreground/80 mb-8">
-              <li className="flex items-start gap-3">
-                <div className="mt-1 text-primary">✓</div>
-                <span>Vilka risker köpare identifierar först</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <div className="mt-1 text-primary">✓</div>
-                <span>Vanligaste "deal-breakers" i due diligence</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <div className="mt-1 text-primary">✓</div>
-                <span>Hur du ökar företagets attraktivitet</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <div className="mt-1 text-primary">✓</div>
-                <span>Vad som påverkar värderingen mest</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <div className="mt-1 text-primary">✓</div>
-                <span>Skillnaden mellan strategiska och finansiella köpare</span>
-              </li>
-            </ul>
-          </div>
-
-          <div className="bg-card border border-card-border rounded-lg p-8">
-            <h3 className="text-xl font-semibold text-foreground mb-6">
-              Ladda ner Säljarguiden (PDF)
-            </h3>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Namn</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Anna Andersson"
-                          data-testid="input-guide-name"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>E-post</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="email"
-                          placeholder="anna@mittforetag.se"
-                          data-testid="input-guide-email"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Button
-                  type="submit"
-                  className="w-full"
-                  size="lg"
-                  disabled={submitMutation.isPending || !form.formState.isValid}
-                  data-testid="button-download-guide"
-                >
-                  <Download className="mr-2" size={18} />
-                  {submitMutation.isPending ? "Skickar..." : "Skicka guiden till min e-post"}
-                </Button>
-                <p className="text-xs text-muted-foreground text-center">
-                  Vi skickar inte massutskick – bara relevant information kopplad till din företagsförsäljning.
-                </p>
-              </form>
-            </Form>
           </div>
         </div>
       </div>
