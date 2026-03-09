@@ -20,16 +20,19 @@ export default function Navigation() {
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
       setIsOpen(false);
+    } else {
+      // On sub-routes, navigate to home page with hash
+      window.location.href = `/#${id}`;
     }
   };
 
   const menuItems = [
-    { label: "Sälj mitt företag", id: "process" },
-    { label: "Exit-diagnos", id: "exit-diagnos" },
-    { label: "Företagsvärdering", id: "market" },
-    { label: "Köparnätverk", id: "cases" },
-    { label: "Kunskapsbank", id: "koparguide" },
-    { label: "Om Skarpa", id: "about" },
+    { label: "Sälj mitt företag", id: "process", type: "scroll" },
+    { label: "Exit-diagnos", id: "exit-diagnos-info", type: "route" },
+    { label: "Företagsvärdering", id: "market", type: "scroll" },
+    { label: "Köparnätverk", id: "cases", type: "scroll" },
+    { label: "Kunskapsbank", id: "koparguide", type: "scroll" },
+    { label: "Om Skarpa", id: "about", type: "scroll" },
   ];
 
   return (
@@ -49,16 +52,27 @@ export default function Navigation() {
           </button>
 
           <div className="hidden lg:flex items-center gap-8">
-            {menuItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => scrollToSection(item.id)}
-                className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors hover-elevate px-3 py-2 rounded-md"
-                data-testid={`link-${item.id}`}
-              >
-                {item.label}
-              </button>
-            ))}
+            {menuItems.map((item) =>
+              item.type === "route" ? (
+                <Link
+                  key={item.id}
+                  href={`/${item.id}`}
+                  className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors hover-elevate px-3 py-2 rounded-md"
+                  data-testid={`link-${item.id}`}
+                >
+                  {item.label}
+                </Link>
+              ) : (
+                <button
+                  key={item.id}
+                  onClick={() => scrollToSection(item.id)}
+                  className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors hover-elevate px-3 py-2 rounded-md"
+                  data-testid={`link-${item.id}`}
+                >
+                  {item.label}
+                </button>
+              )
+            )}
             <Button
               onClick={() => scrollToSection("contact")}
               data-testid="button-contact-nav"
@@ -80,16 +94,28 @@ export default function Navigation() {
       {isOpen && (
         <div className="lg:hidden bg-background border-b">
           <div className="px-6 py-4 space-y-3">
-            {menuItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => scrollToSection(item.id)}
-                className="block w-full text-left text-base font-medium text-foreground/80 hover:text-foreground hover-elevate px-3 py-2 rounded-md"
-                data-testid={`link-mobile-${item.id}`}
-              >
-                {item.label}
-              </button>
-            ))}
+            {menuItems.map((item) =>
+              item.type === "route" ? (
+                <Link
+                  key={item.id}
+                  href={`/${item.id}`}
+                  onClick={() => setIsOpen(false)}
+                  className="block w-full text-left text-base font-medium text-foreground/80 hover:text-foreground hover-elevate px-3 py-2 rounded-md"
+                  data-testid={`link-mobile-${item.id}`}
+                >
+                  {item.label}
+                </Link>
+              ) : (
+                <button
+                  key={item.id}
+                  onClick={() => scrollToSection(item.id)}
+                  className="block w-full text-left text-base font-medium text-foreground/80 hover:text-foreground hover-elevate px-3 py-2 rounded-md"
+                  data-testid={`link-mobile-${item.id}`}
+                >
+                  {item.label}
+                </button>
+              )
+            )}
             <Button
               className="w-full"
               onClick={() => scrollToSection("contact")}
