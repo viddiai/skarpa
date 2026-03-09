@@ -95,16 +95,11 @@ export default function Hero() {
             </Button>
           </div>
 
-          <div className="flex flex-wrap items-center gap-6 text-sm text-foreground/60">
-            <div className="flex items-center gap-2">
-              <Shield size={16} className="text-primary" />
-              <span>100% konfidentiellt</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Users size={16} className="text-primary" />
-              <span>Förutsättningslöst, ingen förpliktelse</span>
-            </div>
-          </div>
+          <ul className="space-y-2 text-sm text-foreground/70">
+            <li>Du lämnar mötet med svar – inte med ett avtal att skriva på.</li>
+            <li>På 45 minuter får du en klar bild av vad ditt bolag är värt och vad en försäljning faktiskt skulle innebära för dig.</li>
+            <li>Ingen utanför rummet får veta att vi pratats vid.</li>
+          </ul>
         </div>
       </div>
     </section>
