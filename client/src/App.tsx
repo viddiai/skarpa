@@ -8,6 +8,7 @@ import Home from "@/pages/Home";
 import ExitDiagnosLanding from "@/pages/ExitDiagnosLanding";
 import Admin from "@/pages/Admin";
 import AdminLogin from "@/pages/AdminLogin";
+import SaljarguidenTack from "@/pages/SaljarguidenTack";
 import NotFound from "@/pages/not-found";
 import { trackPageView } from "@/lib/tracker";
 
@@ -25,6 +26,7 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/exit-diagnos-info" component={ExitDiagnosLanding} />
+      <Route path="/saljarguiden/tack" component={SaljarguidenTack} />
       <Route path="/admin/login" component={AdminLogin} />
       <Route path="/admin" component={Admin} />
       <Route component={NotFound} />

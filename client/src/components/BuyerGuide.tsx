@@ -16,9 +16,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import BookCover from "./BookCover";
+import { useLocation } from "wouter";
 
 export default function BuyerGuide() {
   const { toast } = useToast();
+  const [, navigate] = useLocation();
 
   const form = useForm<InsertBuyerGuideRequest>({
     resolver: zodResolver(insertBuyerGuideRequestSchema),
@@ -33,12 +35,8 @@ export default function BuyerGuide() {
       const res = await apiRequest("POST", "/api/buyer-guide", data);
       return await res.json();
     },
-    onSuccess: (data: any) => {
-      toast({
-        title: "Säljarguiden är på väg!",
-        description: data.message || "Vi skickar PDF:en till din e-post inom några minuter.",
-      });
-      form.reset();
+    onSuccess: () => {
+      navigate("/saljarguiden/tack");
     },
     onError: (error: any) => {
       toast({
