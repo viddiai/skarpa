@@ -17,7 +17,7 @@ import {
   contactMessages,
   pageViews,
   outreachMetrics,
-} from "@shared/schema";
+} from "../shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
 import { eq, desc, gte, count, countDistinct, sql } from "drizzle-orm";

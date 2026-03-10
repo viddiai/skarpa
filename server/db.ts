@@ -1,6 +1,6 @@
 import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
-import * as schema from "@shared/schema";
+import * as schema from "../shared/schema";
 
 // Safe to import even without DATABASE_URL — the db object just won't work
 // DatabaseStorage is only instantiated when DATABASE_URL is set

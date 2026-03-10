@@ -7,7 +7,7 @@ import {
   insertContactMessageSchema,
   insertPageViewSchema,
   insertOutreachMetricSchema,
-} from "@shared/schema";
+} from "../shared/schema";
 
 // ── Admin auth middleware ────────────────────────────────────
 
