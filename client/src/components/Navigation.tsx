@@ -28,12 +28,12 @@ export default function Navigation() {
   };
 
   const menuItems = [
-    { label: "Sälj mitt företag", id: "process", type: "scroll" },
-    { label: "Exit-diagnos", id: "https://www.exit-diagnos.se/", type: "external" },
-    { label: "Företagsvärdering", id: "market", type: "scroll" },
-    { label: "Köparnätverk", id: "cases", type: "scroll" },
-    { label: "Kunskapsbank", id: "koparguide", type: "scroll" },
-    { label: "Om Skarpa", id: "about", type: "scroll" },
+    { label: "Så går försäljningen till", id: "process", type: "scroll" },
+    { label: "Är du redo att sälja?", id: "https://www.exit-diagnos.se/", type: "external" },
+    { label: "Vad är ditt bolag värt?", id: "market", type: "scroll" },
+    { label: "Våra köpare", id: "cases", type: "scroll" },
+    { label: "Lär dig mer", id: "koparguide", type: "scroll" },
+    { label: "Vilka är vi", id: "about", type: "scroll" },
   ];
 
   return (
@@ -89,7 +89,7 @@ export default function Navigation() {
               onClick={() => scrollToSection("contact")}
               data-testid="button-contact-nav"
             >
-              Kontakt
+              Boka möte
             </Button>
           </div>
 
@@ -145,7 +145,7 @@ export default function Navigation() {
               onClick={() => scrollToSection("contact")}
               data-testid="button-contact-nav-mobile"
             >
-              Kontakt
+              Boka möte
             </Button>
           </div>
         </div>
