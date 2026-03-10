@@ -36,10 +36,15 @@ export default function Navigation() {
     { label: "Om oss", id: "about", type: "scroll" },
   ];
 
+  // Dynamic link color: white on hero (transparent bg), dark after scroll
+  const linkClass = isScrolled
+    ? "text-sm font-medium text-foreground/80 hover:text-foreground transition-colors hover-elevate px-3 py-2 rounded-md"
+    : "text-sm font-medium text-white/90 hover:text-white transition-colors hover-elevate px-3 py-2 rounded-md";
+
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? "bg-background/80 backdrop-blur-md border-b" : "bg-transparent"
+        isScrolled ? "bg-background/80 backdrop-blur-md border-b" : "bg-transparent nav-hero"
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 md:px-12">
@@ -60,7 +65,7 @@ export default function Navigation() {
                   href={item.id}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors hover-elevate px-3 py-2 rounded-md"
+                  className={linkClass}
                   data-testid="link-exit-diagnos"
                 >
                   {item.label}
@@ -69,7 +74,7 @@ export default function Navigation() {
                 <Link
                   key={item.id}
                   href={`/${item.id}`}
-                  className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors hover-elevate px-3 py-2 rounded-md"
+                  className={linkClass}
                   data-testid={`link-${item.id}`}
                 >
                   {item.label}
@@ -78,7 +83,7 @@ export default function Navigation() {
                 <button
                   key={item.id}
                   onClick={() => scrollToSection(item.id)}
-                  className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors hover-elevate px-3 py-2 rounded-md"
+                  className={linkClass}
                   data-testid={`link-${item.id}`}
                 >
                   {item.label}
@@ -94,7 +99,7 @@ export default function Navigation() {
           </div>
 
           <button
-            className="lg:hidden"
+            className={`lg:hidden transition-colors ${isScrolled ? "text-foreground" : "text-white"}`}
             onClick={() => setIsOpen(!isOpen)}
             data-testid="button-menu-toggle"
           >
