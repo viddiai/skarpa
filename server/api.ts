@@ -1,6 +1,6 @@
 import express from "express";
 import type { Request, Response, NextFunction } from "express";
-import { registerApiRoutes } from "../server/routes";
+import { registerApiRoutes } from "./routes";
 
 const app = express();
 app.use(express.json());
