@@ -23,8 +23,8 @@ run(
   "npx esbuild api/index.ts" +
     " --bundle" +
     " --platform=node" +
-    " --format=esm" +
-    " --outfile=.vercel/output/functions/api.func/index.mjs",
+    " --format=cjs" +
+    " --outfile=.vercel/output/functions/api.func/index.js",
 );
 
 // Step 3: Function config
