@@ -109,7 +109,7 @@ export default function Footer() {
             </p>
             <div className="flex gap-6">
               <a
-                href="#"
+                href="/integritetspolicy"
                 className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 data-testid="link-privacy"
               >
