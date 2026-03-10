@@ -8,10 +8,10 @@ export default function Footer() {
 
   const links = {
     tjänster: [
-      { label: "Sälj mitt företag", id: "process" },
-      { label: "Exit-diagnos", id: "exit-diagnos" },
-      { label: "Företagsvärdering", id: "market" },
-      { label: "Köparnätverk", id: "cases" },
+      { label: "Sälj mitt företag", id: "process", type: "scroll" },
+      { label: "Exit-diagnos", id: "https://www.exit-diagnos.se/", type: "external" },
+      { label: "Företagsvärdering", id: "market", type: "scroll" },
+      { label: "Köparnätverk", id: "cases", type: "scroll" },
     ],
     resurser: [
       { label: "Säljarguiden", id: "koparguide" },
@@ -39,13 +39,25 @@ export default function Footer() {
             <ul className="space-y-2">
               {links.tjänster.map((link, index) => (
                 <li key={index}>
-                  <button
-                    onClick={() => scrollToSection(link.id)}
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors hover-elevate px-2 py-1 rounded-md -ml-2"
-                    data-testid={`footer-link-${link.id}`}
-                  >
-                    {link.label}
-                  </button>
+                  {link.type === "external" ? (
+                    <a
+                      href={link.id}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-muted-foreground hover:text-foreground transition-colors hover-elevate px-2 py-1 rounded-md -ml-2"
+                      data-testid="footer-link-exit-diagnos"
+                    >
+                      {link.label}
+                    </a>
+                  ) : (
+                    <button
+                      onClick={() => scrollToSection(link.id)}
+                      className="text-sm text-muted-foreground hover:text-foreground transition-colors hover-elevate px-2 py-1 rounded-md -ml-2"
+                      data-testid={`footer-link-${link.id}`}
+                    >
+                      {link.label}
+                    </button>
+                  )}
                 </li>
               ))}
             </ul>

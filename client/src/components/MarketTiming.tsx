@@ -72,10 +72,12 @@ export default function MarketTiming() {
         <div className="text-center">
           <Button
             size="lg"
-            onClick={() => scrollToSection("exit-diagnos")}
+            asChild
             data-testid="button-market-assessment"
           >
-            Få en bedömning av läget för ditt bolag
+            <a href="https://www.exit-diagnos.se/" target="_blank" rel="noopener noreferrer">
+              Få en bedömning av läget för ditt bolag
+            </a>
           </Button>
           <p className="text-sm text-muted-foreground mt-4">
             Gratis, förutsättningslöst och konfidentiellt

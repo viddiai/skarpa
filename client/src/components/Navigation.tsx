@@ -28,7 +28,7 @@ export default function Navigation() {
 
   const menuItems = [
     { label: "Sälj mitt företag", id: "process", type: "scroll" },
-    { label: "Exit-diagnos", id: "exit-diagnos-info", type: "route" },
+    { label: "Exit-diagnos", id: "https://www.exit-diagnos.se/", type: "external" },
     { label: "Företagsvärdering", id: "market", type: "scroll" },
     { label: "Köparnätverk", id: "cases", type: "scroll" },
     { label: "Kunskapsbank", id: "koparguide", type: "scroll" },
@@ -53,7 +53,18 @@ export default function Navigation() {
 
           <div className="hidden lg:flex items-center gap-8">
             {menuItems.map((item) =>
-              item.type === "route" ? (
+              item.type === "external" ? (
+                <a
+                  key={item.id}
+                  href={item.id}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors hover-elevate px-3 py-2 rounded-md"
+                  data-testid="link-exit-diagnos"
+                >
+                  {item.label}
+                </a>
+              ) : item.type === "route" ? (
                 <Link
                   key={item.id}
                   href={`/${item.id}`}
@@ -95,7 +106,19 @@ export default function Navigation() {
         <div className="lg:hidden bg-background border-b">
           <div className="px-6 py-4 space-y-3">
             {menuItems.map((item) =>
-              item.type === "route" ? (
+              item.type === "external" ? (
+                <a
+                  key={item.id}
+                  href={item.id}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setIsOpen(false)}
+                  className="block w-full text-left text-base font-medium text-foreground/80 hover:text-foreground hover-elevate px-3 py-2 rounded-md"
+                  data-testid="link-mobile-exit-diagnos"
+                >
+                  {item.label}
+                </a>
+              ) : item.type === "route" ? (
                 <Link
                   key={item.id}
                   href={`/${item.id}`}

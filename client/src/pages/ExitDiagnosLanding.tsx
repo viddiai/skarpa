@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Check } from "lucide-react";
 import Navigation from "@/components/Navigation";
 
-const QUIZ_URL = import.meta.env.VITE_QUIZ_URL || "https://strukta-quiz.vercel.app/";
+const QUIZ_URL = "https://www.exit-diagnos.se/";
 
 export default function ExitDiagnosLanding() {
   return (

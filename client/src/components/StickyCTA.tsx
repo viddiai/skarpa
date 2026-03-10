@@ -25,10 +25,10 @@ export default function StickyCTA() {
     <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-background/95 backdrop-blur-md border-t shadow-lg">
       <div className="p-4">
         <Button className="w-full" size="lg" asChild data-testid="button-sticky-cta">
-          <Link href="/exit-diagnos-info">
+          <a href="https://www.exit-diagnos.se/" target="_blank" rel="noopener noreferrer">
             Gör en gratis Exit-Diagnos
             <ArrowRight className="ml-2" size={18} />
-          </Link>
+          </a>
         </Button>
       </div>
     </div>

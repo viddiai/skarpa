@@ -78,11 +78,13 @@ export default function Hero() {
             <Button
               size="lg"
               className="text-lg px-8 py-6"
-              onClick={() => scrollToSection("exit-diagnos")}
+              asChild
               data-testid="button-exit-diagnos-hero"
             >
-              Gör en gratis Exit-Diagnos
-              <ArrowRight className="ml-2" size={20} />
+              <a href="https://www.exit-diagnos.se/" target="_blank" rel="noopener noreferrer">
+                Gör en gratis Exit-Diagnos
+                <ArrowRight className="ml-2" size={20} />
+              </a>
             </Button>
             <Button
               size="lg"
