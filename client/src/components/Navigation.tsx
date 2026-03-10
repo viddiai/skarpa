@@ -28,12 +28,12 @@ export default function Navigation() {
   };
 
   const menuItems = [
-    { label: "Så går försäljningen till", id: "process", type: "scroll" },
-    { label: "Är du redo att sälja?", id: "https://www.exit-diagnos.se/", type: "external" },
-    { label: "Vad är ditt bolag värt?", id: "market", type: "scroll" },
+    { label: "Sälja företag", id: "process", type: "scroll" },
+    { label: "Redo att sälja?", id: "https://www.exit-diagnos.se/", type: "external" },
+    { label: "Vad är det värt?", id: "market", type: "scroll" },
     { label: "Våra köpare", id: "cases", type: "scroll" },
     { label: "Lär dig mer", id: "koparguide", type: "scroll" },
-    { label: "Vilka är vi", id: "about", type: "scroll" },
+    { label: "Om oss", id: "about", type: "scroll" },
   ];
 
   return (
