@@ -17,13 +17,12 @@ const run = (cmd) => execSync(cmd, { stdio: "inherit" });
 // Step 1: Build frontend
 run("npx vite build");
 
-// Step 2: Bundle API with esbuild (all internal imports inlined)
+// Step 2: Bundle API with esbuild (ALL deps inlined except node: builtins)
 mkdirSync(".vercel/output/functions/api.func", { recursive: true });
 run(
   "npx esbuild api/index.ts" +
     " --bundle" +
     " --platform=node" +
-    " --packages=external" +
     " --format=esm" +
     " --outfile=.vercel/output/functions/api.func/index.mjs",
 );
