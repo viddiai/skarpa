@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
+import SkarpaLogo from "./SkarpaLogo";
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
@@ -45,10 +46,10 @@ export default function Navigation() {
         <div className="flex items-center justify-between h-20">
           <button
             onClick={() => scrollToSection("hero")}
-            className="text-2xl font-bold text-foreground hover-elevate px-2 py-1 rounded-md"
+            className="hover-elevate px-2 py-1 rounded-md"
             data-testid="link-home"
           >
-            Skarpa
+            <SkarpaLogo height={28} />
           </button>
 
           <div className="hidden lg:flex items-center gap-8">

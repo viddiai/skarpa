@@ -1,3 +1,5 @@
+import SkarpaLogo from "./SkarpaLogo";
+
 export default function Footer() {
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -28,7 +30,9 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           <div>
-            <h3 className="text-2xl font-bold text-foreground mb-4">Skarpa</h3>
+            <div className="mb-4">
+              <SkarpaLogo height={30} />
+            </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
               Professionell rådgivning vid företagsöverlåtelser för svenska bolag (40–450 MSEK).
             </p>

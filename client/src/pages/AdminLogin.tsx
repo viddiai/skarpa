@@ -3,6 +3,7 @@ import { useLocation } from "wouter";
 import { setAdminToken } from "@/lib/adminAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import SkarpaLogo from "@/components/SkarpaLogo";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Lock } from "lucide-react";
 
@@ -42,10 +43,10 @@ export default function AdminLogin() {
     <div className="min-h-screen flex items-center justify-center bg-muted/30 px-4">
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center">
-          <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-2">
-            <Lock className="w-6 h-6 text-primary" />
+          <div className="flex justify-center mb-2">
+            <SkarpaLogo height={32} />
           </div>
-          <CardTitle className="text-xl">Skarpa Admin</CardTitle>
+          <CardTitle className="text-xl">Admin</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
