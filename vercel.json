@@ -1,5 +1,5 @@
 {
-  "buildCommand": "vite build && esbuild server/api.ts --bundle --platform=node --packages=external --format=esm --outfile=api/index.js",
+  "buildCommand": "vite build && esbuild api/index.ts --bundle --platform=node --packages=external --format=esm --outfile=api/index.js && rm api/index.ts",
   "outputDirectory": "dist/public",
   "installCommand": "npm install",
   "framework": null,
