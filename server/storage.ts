@@ -1,45 +1,76 @@
-import { 
-  type User, 
+import {
+  type User,
   type InsertUser,
   type ExitDiagnosis,
   type InsertExitDiagnosis,
   type BuyerGuideRequest,
   type InsertBuyerGuideRequest,
   type ContactMessage,
-  type InsertContactMessage
+  type InsertContactMessage,
+  type PageView,
+  type InsertPageView,
+  type OutreachMetric,
+  type InsertOutreachMetric,
+  users,
+  exitDiagnoses,
+  buyerGuideRequests,
+  contactMessages,
+  pageViews,
+  outreachMetrics,
 } from "@shared/schema";
 import { randomUUID } from "crypto";
+import { db } from "./db";
+import { eq, desc, gte, count, countDistinct, sql } from "drizzle-orm";
+
+// ── Interface ───────────────────────────────────────────────
 
 export interface IStorage {
   // User methods
   getUser(id: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
-  
+
   // Exit Diagnosis methods
   createExitDiagnosis(diagnosis: InsertExitDiagnosis): Promise<ExitDiagnosis>;
   getExitDiagnoses(): Promise<ExitDiagnosis[]>;
-  
+
   // Buyer Guide methods
   createBuyerGuideRequest(request: InsertBuyerGuideRequest): Promise<BuyerGuideRequest>;
   getBuyerGuideRequests(): Promise<BuyerGuideRequest[]>;
-  
+
   // Contact Message methods
   createContactMessage(message: InsertContactMessage): Promise<ContactMessage>;
   getContactMessages(): Promise<ContactMessage[]>;
+
+  // Page view tracking
+  createPageView(view: InsertPageView): Promise<void>;
+  getPageViewStats(since: Date): Promise<{ totalViews: number; uniqueVisitors: number }>;
+  getPageViewTimeseries(days: number): Promise<{ date: string; views: number; unique: number }[]>;
+  getTopPages(since: Date, limit: number): Promise<{ path: string; count: number }[]>;
+
+  // Outreach metrics
+  createOutreachMetric(metric: InsertOutreachMetric): Promise<OutreachMetric>;
+  getOutreachMetrics(since?: Date): Promise<OutreachMetric[]>;
+  deleteOutreachMetric(id: string): Promise<void>;
 }
+
+// ── MemStorage (development fallback) ───────────────────────
 
 export class MemStorage implements IStorage {
   private users: Map<string, User>;
-  private exitDiagnoses: Map<string, ExitDiagnosis>;
-  private buyerGuideRequests: Map<string, BuyerGuideRequest>;
-  private contactMessages: Map<string, ContactMessage>;
+  private exitDiagnosesMap: Map<string, ExitDiagnosis>;
+  private buyerGuideRequestsMap: Map<string, BuyerGuideRequest>;
+  private contactMessagesMap: Map<string, ContactMessage>;
+  private pageViewsList: PageView[];
+  private outreachMetricsMap: Map<string, OutreachMetric>;
 
   constructor() {
     this.users = new Map();
-    this.exitDiagnoses = new Map();
-    this.buyerGuideRequests = new Map();
-    this.contactMessages = new Map();
+    this.exitDiagnosesMap = new Map();
+    this.buyerGuideRequestsMap = new Map();
+    this.contactMessagesMap = new Map();
+    this.pageViewsList = [];
+    this.outreachMetricsMap = new Map();
   }
 
   async getUser(id: string): Promise<User | undefined> {
@@ -67,12 +98,12 @@ export class MemStorage implements IStorage {
       phone: diagnosis.phone ?? null,
       createdAt: new Date(),
     };
-    this.exitDiagnoses.set(id, exitDiagnosis);
+    this.exitDiagnosesMap.set(id, exitDiagnosis);
     return exitDiagnosis;
   }
 
   async getExitDiagnoses(): Promise<ExitDiagnosis[]> {
-    return Array.from(this.exitDiagnoses.values());
+    return Array.from(this.exitDiagnosesMap.values());
   }
 
   async createBuyerGuideRequest(request: InsertBuyerGuideRequest): Promise<BuyerGuideRequest> {
@@ -82,12 +113,12 @@ export class MemStorage implements IStorage {
       ...request,
       createdAt: new Date(),
     };
-    this.buyerGuideRequests.set(id, buyerGuideRequest);
+    this.buyerGuideRequestsMap.set(id, buyerGuideRequest);
     return buyerGuideRequest;
   }
 
   async getBuyerGuideRequests(): Promise<BuyerGuideRequest[]> {
-    return Array.from(this.buyerGuideRequests.values());
+    return Array.from(this.buyerGuideRequestsMap.values());
   }
 
   async createContactMessage(message: InsertContactMessage): Promise<ContactMessage> {
@@ -98,13 +129,205 @@ export class MemStorage implements IStorage {
       phone: message.phone ?? null,
       createdAt: new Date(),
     };
-    this.contactMessages.set(id, contactMessage);
+    this.contactMessagesMap.set(id, contactMessage);
     return contactMessage;
   }
 
   async getContactMessages(): Promise<ContactMessage[]> {
-    return Array.from(this.contactMessages.values());
+    return Array.from(this.contactMessagesMap.values());
+  }
+
+  // Page view tracking (in-memory — only for local dev)
+  async createPageView(view: InsertPageView): Promise<void> {
+    this.pageViewsList.push({
+      id: randomUUID(),
+      ...view,
+      referrer: view.referrer ?? null,
+      userAgent: view.userAgent ?? null,
+      sessionId: view.sessionId ?? null,
+      createdAt: new Date(),
+    });
+  }
+
+  async getPageViewStats(since: Date): Promise<{ totalViews: number; uniqueVisitors: number }> {
+    const filtered = this.pageViewsList.filter((pv) => pv.createdAt >= since);
+    const uniqueVisitors = new Set(filtered.map((pv) => pv.visitorId)).size;
+    return { totalViews: filtered.length, uniqueVisitors };
+  }
+
+  async getPageViewTimeseries(days: number): Promise<{ date: string; views: number; unique: number }[]> {
+    const since = new Date(Date.now() - days * 86400000);
+    const filtered = this.pageViewsList.filter((pv) => pv.createdAt >= since);
+    const byDay = new Map<string, Set<string>>();
+    const countByDay = new Map<string, number>();
+    for (const pv of filtered) {
+      const day = pv.createdAt.toISOString().slice(0, 10);
+      countByDay.set(day, (countByDay.get(day) || 0) + 1);
+      if (!byDay.has(day)) byDay.set(day, new Set());
+      byDay.get(day)!.add(pv.visitorId);
+    }
+    return Array.from(countByDay.entries())
+      .map(([date, views]) => ({ date, views, unique: byDay.get(date)?.size || 0 }))
+      .sort((a, b) => a.date.localeCompare(b.date));
+  }
+
+  async getTopPages(since: Date, limit: number): Promise<{ path: string; count: number }[]> {
+    const filtered = this.pageViewsList.filter((pv) => pv.createdAt >= since);
+    const counts = new Map<string, number>();
+    for (const pv of filtered) counts.set(pv.path, (counts.get(pv.path) || 0) + 1);
+    return Array.from(counts.entries())
+      .map(([path, count]) => ({ path, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, limit);
+  }
+
+  // Outreach metrics
+  async createOutreachMetric(metric: InsertOutreachMetric): Promise<OutreachMetric> {
+    const id = randomUUID();
+    const entry: OutreachMetric = {
+      id,
+      ...metric,
+      date: typeof metric.date === "string" ? new Date(metric.date) : metric.date,
+      notes: metric.notes ?? null,
+      createdAt: new Date(),
+    };
+    this.outreachMetricsMap.set(id, entry);
+    return entry;
+  }
+
+  async getOutreachMetrics(since?: Date): Promise<OutreachMetric[]> {
+    const all = Array.from(this.outreachMetricsMap.values());
+    if (since) return all.filter((m) => m.date >= since);
+    return all;
+  }
+
+  async deleteOutreachMetric(id: string): Promise<void> {
+    this.outreachMetricsMap.delete(id);
   }
 }
 
-export const storage = new MemStorage();
+// ── DatabaseStorage (Neon PostgreSQL via Drizzle) ───────────
+
+class DatabaseStorage implements IStorage {
+  async getUser(id: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db.insert(users).values(insertUser).returning();
+    return user;
+  }
+
+  async createExitDiagnosis(diagnosis: InsertExitDiagnosis): Promise<ExitDiagnosis> {
+    const [result] = await db.insert(exitDiagnoses).values(diagnosis).returning();
+    return result;
+  }
+
+  async getExitDiagnoses(): Promise<ExitDiagnosis[]> {
+    return db.select().from(exitDiagnoses).orderBy(desc(exitDiagnoses.createdAt));
+  }
+
+  async createBuyerGuideRequest(request: InsertBuyerGuideRequest): Promise<BuyerGuideRequest> {
+    const [result] = await db.insert(buyerGuideRequests).values(request).returning();
+    return result;
+  }
+
+  async getBuyerGuideRequests(): Promise<BuyerGuideRequest[]> {
+    return db.select().from(buyerGuideRequests).orderBy(desc(buyerGuideRequests.createdAt));
+  }
+
+  async createContactMessage(message: InsertContactMessage): Promise<ContactMessage> {
+    const [result] = await db.insert(contactMessages).values(message).returning();
+    return result;
+  }
+
+  async getContactMessages(): Promise<ContactMessage[]> {
+    return db.select().from(contactMessages).orderBy(desc(contactMessages.createdAt));
+  }
+
+  async createPageView(view: InsertPageView): Promise<void> {
+    await db.insert(pageViews).values(view);
+  }
+
+  async getPageViewStats(since: Date): Promise<{ totalViews: number; uniqueVisitors: number }> {
+    const [result] = await db
+      .select({
+        totalViews: count(),
+        uniqueVisitors: countDistinct(pageViews.visitorId),
+      })
+      .from(pageViews)
+      .where(gte(pageViews.createdAt, since));
+    return {
+      totalViews: Number(result?.totalViews ?? 0),
+      uniqueVisitors: Number(result?.uniqueVisitors ?? 0),
+    };
+  }
+
+  async getPageViewTimeseries(days: number): Promise<{ date: string; views: number; unique: number }[]> {
+    const since = new Date(Date.now() - days * 86400000);
+    const rows = await db
+      .select({
+        date: sql<string>`DATE(${pageViews.createdAt})::text`,
+        views: count(),
+        unique: countDistinct(pageViews.visitorId),
+      })
+      .from(pageViews)
+      .where(gte(pageViews.createdAt, since))
+      .groupBy(sql`DATE(${pageViews.createdAt})`)
+      .orderBy(sql`DATE(${pageViews.createdAt})`);
+    return rows.map((r) => ({
+      date: r.date,
+      views: Number(r.views),
+      unique: Number(r.unique),
+    }));
+  }
+
+  async getTopPages(since: Date, limit: number): Promise<{ path: string; count: number }[]> {
+    const rows = await db
+      .select({
+        path: pageViews.path,
+        count: count(),
+      })
+      .from(pageViews)
+      .where(gte(pageViews.createdAt, since))
+      .groupBy(pageViews.path)
+      .orderBy(desc(count()))
+      .limit(limit);
+    return rows.map((r) => ({ path: r.path, count: Number(r.count) }));
+  }
+
+  async createOutreachMetric(metric: InsertOutreachMetric): Promise<OutreachMetric> {
+    const [result] = await db.insert(outreachMetrics).values({
+      ...metric,
+      date: typeof metric.date === "string" ? new Date(metric.date) : metric.date,
+    }).returning();
+    return result;
+  }
+
+  async getOutreachMetrics(since?: Date): Promise<OutreachMetric[]> {
+    if (since) {
+      return db
+        .select()
+        .from(outreachMetrics)
+        .where(gte(outreachMetrics.date, since))
+        .orderBy(desc(outreachMetrics.date));
+    }
+    return db.select().from(outreachMetrics).orderBy(desc(outreachMetrics.date));
+  }
+
+  async deleteOutreachMetric(id: string): Promise<void> {
+    await db.delete(outreachMetrics).where(eq(outreachMetrics.id, id));
+  }
+}
+
+// ── Export: use Neon in production, MemStorage in local dev ──
+
+export const storage: IStorage = process.env.DATABASE_URL
+  ? new DatabaseStorage()
+  : new MemStorage();
