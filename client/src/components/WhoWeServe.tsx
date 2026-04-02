@@ -24,13 +24,13 @@ export default function WhoWeServe() {
           <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-4">
             Vem vi passar för
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mt-8">
             Vi tror på transparens. Här är vem vi kan hjälpa – och vem vi troligen inte är rätt för.
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">
-          <Card className="p-8">
+          <Card className="p-8 bg-green-50">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                 <CheckCircle2 className="text-primary" size={20} />
@@ -56,7 +56,7 @@ export default function WhoWeServe() {
             </ul>
           </Card>
 
-          <Card className="p-8 bg-muted/30">
+          <Card className="p-8 bg-red-50">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
                 <XCircle className="text-muted-foreground" size={20} />
