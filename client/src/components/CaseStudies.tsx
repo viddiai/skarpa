@@ -1,40 +1,52 @@
 import { Card } from "@/components/ui/card";
 import { Quote } from "lucide-react";
-import itConsultingImage from "@assets/generated_images/it_consulting_office_workspace.png";
-import manufacturingImage from "@assets/generated_images/manufacturing_facility_interior.png";
-import retailImage from "@assets/generated_images/retail_store_interior.png";
+import itConsultingImage from "@assets/Bild1_Grossistverksamhet inom elmaterial.png";
+import manufacturingImage from "@assets/Bild2_Tillverkande industri.png";
+import retailImage from "@assets/Bild3_Teknisk fastighetsservice.webp";
 
 export default function CaseStudies() {
   const cases = [
     {
       image: itConsultingImage,
-      industry: "IT-konsult",
-      size: "60 MSEK omsättning",
-      challenge: "Ägaren ville sälja men var osäker på rätt värdering och vilka köpare som skulle passa företagets kultur.",
-      solution: "Vi genomförde grundlig värderingsanalys och identifierade fem strategiska köpare som matchade företagskulturen.",
-      result: "Försäljningspris ~40% över första indikationen",
-      quote: "Skarpa gav oss trygghet genom hela processen. De förstod både siffrorna och det mjuka värdet i vår verksamhet.",
-      author: "Anders Lindström, VD & Grundare",
+      industry: "Grossistverksamhet inom elmaterial",
+      size: "200 MSEK i omsättning",
+      challenge:
+        "Ägarna upplevde att bolaget hade mer potential att växa, men behövde extern hjälp för att ta nästa steg. Samtidigt var det viktigt att hitta en köpare som passade in i företagets kultur och värderingar.",
+      solution:
+        "Vi genomförde en strukturerad förberedelsefas och identifierade tio strategiska köpare. Efter dialog och utvärdering valde vi att gå vidare med en av dessa köpare.",
+      result:
+        "Försäljningspriset blev 20 % högre än den första indikationen. Under det första hela verksamhetsåret efter försäljningen ökade intäkterna med 25 %. Säljarna återinvesterade dessutom 20 % av köpeskillingen i köparen, som var ett börsnoterat bolag.",
+      quote:
+        "Skarpa gav oss trygghet genom hela processen. De förstod både siffrorna och det mjuka värdet i vår verksamhet.",
+      author: "Nils B, VD & grundare",
     },
     {
       image: manufacturingImage,
       industry: "Tillverkande industri",
-      size: "120 MSEK omsättning",
-      challenge: "Ägarna ville säkerställa att personalen och kunderna skulle tas om hand efter försäljningen.",
-      solution: "Vi förankrade ägarnas önskemål tidigt och valde köpare som delade samma långsiktiga vision.",
-      result: "Alla 45 anställda behöll sina jobb, affären blev av till önskat pris",
-      quote: "Det var viktigt för oss att hitta rätt köpare, inte bara högsta budet. Skarpa förstod det.",
-      author: "Maria Bergqvist, Majoritetsägare",
+      size: "40 MSEK i omsättning",
+      challenge:
+        "Ägaren ville säkerställa att både personal och kunder skulle tas om hand på ett långsiktigt och ansvarsfullt sätt efter försäljningen. Bolaget hade funnits i familjens ägo i över 80 år, vilket gjorde valet av köpare särskilt viktigt.",
+      solution:
+        "Vi förankrade ägarens önskemål tidigt i processen och fokuserade på att identifiera köpare med samma långsiktiga syn på verksamheten. Kontakt togs även med internationella aktörer som kunde erbjuda goda expansionsmöjligheter för bolaget och dess medarbetare.",
+      result:
+        "Samtliga 20 anställda behöll sina anställningar och affären genomfördes till ett pris som var 50 % högre än säljarens ursprungliga förväntningar.",
+      quote:
+        "Det var viktigt för oss att hitta rätt köpare, inte bara högsta budet. Skarpa förstod det.",
+      author: "Hans W, ägare och VD",
     },
     {
       image: retailImage,
-      industry: "Specialisthandel",
-      size: "35 MSEK omsättning",
-      challenge: "Företaget hade stark position men var tungt ägarberoende, vilket kunde påverka värderingen negativt.",
-      solution: "Vi hjälpte till att förbereda organisationen i 6 månader innan försäljning för att minska ägarberoendet.",
-      result: "Värderingen ökade med 25% jämfört med ursprunglig bedömning",
-      quote: "Förberedelsefasen var avgörande. Vi fick betydligt bättre betalt tack vare Skarpas strukturerade metod.",
-      author: "Johan Svensson, Ägare",
+      industry: "Teknisk fastighetsservice",
+      size: "240 MSEK i omsättning",
+      challenge:
+        "Företaget hade en stark marknadsposition men var starkt ägarberoende, vilket riskerade att pressa värderingen. Dessutom fanns fem delägare med olika mål och behov, vilket gjorde det nödvändigt att enas om en gemensam plan inför framtiden.",
+      solution:
+        "Vi hjälpte bolaget att under sex månader förbereda organisationen inför en försäljning, med fokus på att minska ägarberoendet och skapa en mer självständig verksamhet.",
+      result:
+        "Värderingen ökade med 15 % jämfört med den initiala bedömningen.",
+      quote:
+        "Förberedelsefasen var avgörande. Vi fick betydligt bättre betalt tack vare Skarpas strukturerade metod.",
+      author: "Håkan P, delägare och VD",
     },
   ];
 

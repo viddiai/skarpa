@@ -36,10 +36,8 @@ export default function Navigation() {
     { label: "Om oss", id: "about", type: "scroll" },
   ];
 
-  // Dynamic link color: white on hero (transparent bg), dark after scroll
-  const linkClass = isScrolled
-    ? "text-sm font-medium text-foreground/80 hover:text-foreground transition-colors hover-elevate px-3 py-2 rounded-md"
-    : "text-sm font-medium text-white/90 hover:text-white transition-colors hover-elevate px-3 py-2 rounded-md";
+  // Hero now has white overlay — use dark text at all times
+  const linkClass = "text-sm font-medium text-foreground/80 hover:text-foreground transition-colors hover-elevate px-3 py-2 rounded-md";
 
   return (
     <nav
@@ -90,16 +88,19 @@ export default function Navigation() {
                 </button>
               )
             )}
-            <Button
-              onClick={() => scrollToSection("contact")}
-              data-testid="button-contact-nav"
-            >
-              Boka möte
+            <Button asChild data-testid="button-contact-nav">
+              <a
+                href="https://calendly.com/johan-forsen-skarpa/30min"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Boka möte
+              </a>
             </Button>
           </div>
 
           <button
-            className={`lg:hidden transition-colors ${isScrolled ? "text-foreground" : "text-white"}`}
+            className="lg:hidden transition-colors text-foreground"
             onClick={() => setIsOpen(!isOpen)}
             data-testid="button-menu-toggle"
           >
@@ -145,12 +146,15 @@ export default function Navigation() {
                 </button>
               )
             )}
-            <Button
-              className="w-full"
-              onClick={() => scrollToSection("contact")}
-              data-testid="button-contact-nav-mobile"
-            >
-              Boka möte
+            <Button className="w-full" asChild data-testid="button-contact-nav-mobile">
+              <a
+                href="https://calendly.com/johan-forsen-skarpa/30min"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setIsOpen(false)}
+              >
+                Boka möte
+              </a>
             </Button>
           </div>
         </div>

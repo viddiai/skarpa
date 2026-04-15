@@ -1,34 +1,46 @@
+import {
+  Stepper,
+  StepperContent,
+  StepperIndicator,
+  StepperItem,
+  StepperNav,
+  StepperPanel,
+  StepperSeparator,
+  StepperTitle,
+  StepperTrigger,
+} from "@/components/ui/stepper";
+
 export default function ProcessTimeline() {
   const steps = [
     {
-      number: 1,
       title: "Konfidentiellt möte",
-      description: "Vi lär känna dig och ditt företag. Du får en första bedömning av förutsättningarna och möjlig värdering.",
+      description:
+        "Vi lär känna dig och ditt företag. Du får en första bedömning av förutsättningarna och möjlig värdering.",
     },
     {
-      number: 2,
       title: "Förbereda företaget",
-      description: "Vi gör en grundlig analys och identifierar de åtgärder som maximerar värdet. Du får en tydlig plan.",
+      description:
+        "Vi gör en grundlig analys och identifierar de åtgärder som maximerar värdet. Du får en tydlig plan.",
     },
     {
-      number: 3,
       title: "Hitta rätt köpare",
-      description: "Vi kontaktar verifierade köpare i vårt nätverk och genomför strukturerad säljprocess med konkurrens.",
+      description:
+        "Vi kontaktar verifierade köpare i vårt nätverk och genomför strukturerad säljprocess med konkurrens.",
     },
     {
-      number: 4,
       title: "Förhandling",
-      description: "Vi säkerställer att du får bästa möjliga villkor genom professionell förhandling och juridisk genomgång.",
+      description:
+        "Vi säkerställer att du får bästa möjliga villkor genom professionell förhandling och juridisk genomgång.",
     },
     {
-      number: 5,
       title: "Due diligence",
-      description: "Vi hanterar köparens granskning och säkerställer att processen löper smidigt utan överraskningar.",
+      description:
+        "Vi hanterar köparens granskning och säkerställer att processen löper smidigt utan överraskningar.",
     },
     {
-      number: 6,
       title: "Avtal & tillträde",
-      description: "Vi säkrar en trygg övergång där både du och köparen känner er nöjda med affären.",
+      description:
+        "Vi säkrar en trygg övergång där både du och köparen känner er nöjda med affären.",
     },
   ];
 
@@ -40,39 +52,56 @@ export default function ProcessTimeline() {
             En trygg process från start till mål
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Hela processen tar normalt 6–12 månader från första möte till tillträde. Vi guidar dig genom varje steg.
+            Hela processen tar normalt 6–12 månader från första möte till tillträde.
+            <br />
+            <br />
+            Vi guidar dig genom varje steg.
           </p>
         </div>
 
-        <div className="space-y-8 md:space-y-0 md:grid md:grid-cols-3 md:gap-8">
-          {steps.map((step, index) => (
-            <div
-              key={index}
-              className="relative"
-              data-testid={`process-step-${index}`}
-            >
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0">
-                  <div className="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xl font-bold">
-                    {step.number}
+        <Stepper defaultValue={1} className="space-y-10">
+          <StepperNav className="gap-3 md:gap-4">
+            {steps.map((step, index) => (
+              <StepperItem
+                key={index}
+                step={index + 1}
+                className="relative flex-1 items-start"
+              >
+                <StepperTrigger
+                  className="flex flex-col items-start justify-center gap-3 grow"
+                  data-testid={`process-step-${index}`}
+                >
+                  <StepperIndicator className="bg-border rounded-full h-1 w-full data-[state=active]:bg-primary data-[state=completed]:bg-primary">
+                    <span className="sr-only">Steg {index + 1}</span>
+                  </StepperIndicator>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-semibold text-muted-foreground group-data-[state=active]/step:text-primary group-data-[state=completed]/step:text-primary">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <StepperTitle className="text-start font-semibold text-foreground group-data-[state=inactive]/step:text-muted-foreground">
+                      {step.title}
+                    </StepperTitle>
                   </div>
-                </div>
-                <div className="flex-1 pt-1">
-                  <h3 className="text-xl font-semibold text-foreground mb-2">
-                    {step.title}
-                  </h3>
-                  <p className="text-muted-foreground leading-relaxed">
-                    {step.description}
-                  </p>
-                </div>
-              </div>
-              {index < steps.length - 1 && (
-                <div className="hidden md:block absolute top-6 left-6 w-full h-0.5 bg-border -z-10" 
-                     style={{ width: 'calc(100% + 2rem)' }} />
-              )}
-            </div>
-          ))}
-        </div>
+                </StepperTrigger>
+                {index < steps.length - 1 && <StepperSeparator className="hidden" />}
+              </StepperItem>
+            ))}
+          </StepperNav>
+
+          <StepperPanel>
+            {steps.map((step, index) => (
+              <StepperContent
+                key={index}
+                value={index + 1}
+                className="max-w-2xl mx-auto text-center"
+              >
+                <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
+                  {step.description}
+                </p>
+              </StepperContent>
+            ))}
+          </StepperPanel>
+        </Stepper>
       </div>
     </section>
   );

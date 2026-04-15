@@ -1,10 +1,10 @@
-import { Building2, TrendingUp, Users, Award } from "lucide-react";
+import { Building2, TrendingUp, Smile, Award } from "lucide-react";
 
 export default function TrustSignals() {
   const stats = [
-    { icon: Building2, value: "100+", label: "Genomförda transaktioner" },
-    { icon: TrendingUp, value: "3 mdr SEK", label: "Totalt transaktionsvärde" },
-    { icon: Users, value: "200+", label: "Aktiva köpare i nätverket" },
+    { icon: Building2, value: "200+", label: "Genomförda transaktioner" },
+    { icon: TrendingUp, value: "8 mdr SEK", label: "Totalt transaktionsvärde" },
+    { icon: Smile, value: "+95%", label: "Nöjda företagsägare" },
     { icon: Award, value: "25 år", label: "Kombinerad erfarenhet" },
   ];
 
@@ -16,7 +16,7 @@ export default function TrustSignals() {
             Beprövad erfarenhet
           </h2>
           <p className="text-lg text-muted-foreground">
-            Över 100 svenska företagsägare har litat på oss
+            Över 200 företagsägare har litat på oss
           </p>
         </div>
 
