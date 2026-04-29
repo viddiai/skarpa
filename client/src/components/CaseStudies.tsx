@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Quote } from "lucide-react";
-import itConsultingImage from "@assets/Bild1_Grossistverksamhet inom elmaterial.png";
-import manufacturingImage from "@assets/Bild2_Tillverkande industri.png";
+import itConsultingImage from "@assets/Bild1_Grossistverksamhet_inom_elmaterial.jpg";
+import manufacturingImage from "@assets/Bild2_Tillverkande_industri.jpg";
 import retailImage from "@assets/Bild3_Teknisk fastighetsservice.webp";
 
 export default function CaseStudies() {

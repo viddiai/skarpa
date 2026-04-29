@@ -199,6 +199,70 @@ export function registerApiRoutes(app: Express) {
       res.status(500).json({ error: "Failed to delete outreach metric" });
     }
   });
+
+  // ── Calendly proxy ──────────────────────────────────────
+
+  let cachedUserUri: string | null = null;
+
+  async function calendlyGet(path: string) {
+    const token = process.env.CALENDLY_TOKEN;
+    if (!token) throw new Error("CALENDLY_TOKEN not configured");
+    const url = path.startsWith("http") ? path : `https://api.calendly.com${path}`;
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      const body = await response.text();
+      throw new Error(`Calendly ${response.status}: ${body}`);
+    }
+    return response.json();
+  }
+
+  async function getUserUri(): Promise<string> {
+    if (cachedUserUri) return cachedUserUri;
+    const data = await calendlyGet("/users/me");
+    cachedUserUri = data.resource.uri;
+    return cachedUserUri!;
+  }
+
+  app.get("/api/admin/calendly/events", adminAuth, async (req, res) => {
+    try {
+      const status = (req.query.status as string) || "active";
+      const userUri = await getUserUri();
+
+      const params = new URLSearchParams({
+        user: userUri,
+        status,
+        sort: "start_time:asc",
+        count: "50",
+      });
+      if (status === "active") {
+        params.set("min_start_time", new Date().toISOString());
+      }
+
+      const events = await calendlyGet(`/scheduled_events?${params.toString()}`);
+
+      // Fetch invitees for each event in parallel
+      const eventsWithInvitees = await Promise.all(
+        (events.collection ?? []).map(async (event: any) => {
+          try {
+            const invitees = await calendlyGet(`${event.uri}/invitees`);
+            return { ...event, invitees: invitees.collection ?? [] };
+          } catch {
+            return { ...event, invitees: [] };
+          }
+        }),
+      );
+
+      res.json({ events: eventsWithInvitees });
+    } catch (error: any) {
+      console.error("Calendly error:", error);
+      res.status(500).json({ error: error.message || "Failed to fetch events" });
+    }
+  });
 }
 
 // ── Register routes + create HTTP server (for local dev) ────

@@ -281,7 +281,7 @@ class DatabaseStorage implements IStorage {
       .where(gte(pageViews.createdAt, since))
       .groupBy(sql`DATE(${pageViews.createdAt})`)
       .orderBy(sql`DATE(${pageViews.createdAt})`);
-    return rows.map((r) => ({
+    return rows.map((r: { date: string; views: number; unique: number }) => ({
       date: r.date,
       views: Number(r.views),
       unique: Number(r.unique),
@@ -299,7 +299,10 @@ class DatabaseStorage implements IStorage {
       .groupBy(pageViews.path)
       .orderBy(desc(count()))
       .limit(limit);
-    return rows.map((r) => ({ path: r.path, count: Number(r.count) }));
+    return rows.map((r: { path: string; count: number }) => ({
+      path: r.path,
+      count: Number(r.count),
+    }));
   }
 
   async createOutreachMetric(metric: InsertOutreachMetric): Promise<OutreachMetric> {

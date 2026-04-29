@@ -5,6 +5,7 @@ import AdminHeader from "@/components/admin/AdminHeader";
 import OverviewTab from "@/components/admin/OverviewTab";
 import ContactsTab from "@/components/admin/ContactsTab";
 import OutreachTab from "@/components/admin/OutreachTab";
+import BookingsTab from "@/components/admin/BookingsTab";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function Admin() {
@@ -46,6 +47,7 @@ export default function Admin() {
             <TabsTrigger value="overview">Översikt</TabsTrigger>
             <TabsTrigger value="contacts">Kontakter</TabsTrigger>
             <TabsTrigger value="outreach">Outreach</TabsTrigger>
+            <TabsTrigger value="bookings">Bokningar</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview">
@@ -56,6 +58,9 @@ export default function Admin() {
           </TabsContent>
           <TabsContent value="outreach">
             <OutreachTab />
+          </TabsContent>
+          <TabsContent value="bookings">
+            <BookingsTab />
           </TabsContent>
         </Tabs>
       </main>
