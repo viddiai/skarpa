@@ -49,6 +49,26 @@ export const pageViews = pgTable("page_views", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+// ── Contacts (CRM-style prospect list) ──────────────────────
+export const contacts = pgTable("contacts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  email: text("email").notNull(),
+  companyName: text("company_name"),
+  website: text("website"),
+  industry: text("industry"),
+  revenueRange: text("revenue_range"),
+  employeeCount: integer("employee_count"),
+  ownerCeoPartnerName: text("owner_ceo_partner_name"),
+  linkedinUrl: text("linkedin_url"),
+  persona: text("persona"),
+  icpScore: integer("icp_score"),
+  source: text("source"),
+  outreachStatus: text("outreach_status").notNull().default("new"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 // ── Outreach metrics (manual entry) ─────────────────────────
 export const outreachMetrics = pgTable("outreach_metrics", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -119,6 +139,58 @@ export const insertPageViewSchema = createInsertSchema(pageViews).omit({
   sessionId: z.string().nullable().optional(),
 });
 
+export const OUTREACH_STATUSES = [
+  "new",
+  "contacted",
+  "replied",
+  "qualified",
+  "meeting_booked",
+  "not_interested",
+  "closed_won",
+  "closed_lost",
+] as const;
+
+export const PERSONAS = [
+  "family_owned",
+  "founder_led",
+  "financial_buyer",
+  "strategic_buyer",
+  "industry_player",
+  "other",
+] as const;
+
+export const SOURCES = [
+  "linkedin",
+  "website_form",
+  "referral",
+  "cold_email",
+  "apollo_list",
+  "manual",
+  "other",
+] as const;
+
+export const insertContactSchema = createInsertSchema(contacts).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+}).extend({
+  email: z.string().trim().email("Ogiltig e-postadress"),
+  companyName: z.string().trim().optional().nullable(),
+  website: z.string().trim().url("Ogiltig URL").optional().or(z.literal("")).nullable(),
+  industry: z.string().trim().optional().nullable(),
+  revenueRange: z.string().trim().optional().nullable(),
+  employeeCount: z.number().int().min(0).optional().nullable(),
+  ownerCeoPartnerName: z.string().trim().optional().nullable(),
+  linkedinUrl: z.string().trim().url("Ogiltig URL").optional().or(z.literal("")).nullable(),
+  persona: z.enum(PERSONAS).optional().nullable(),
+  icpScore: z.number().int().min(0).max(100).optional().nullable(),
+  source: z.enum(SOURCES).optional().nullable(),
+  outreachStatus: z.enum(OUTREACH_STATUSES).default("new"),
+  notes: z.string().optional().nullable(),
+});
+
+export const updateContactSchema = insertContactSchema.partial();
+
 export const insertOutreachMetricSchema = createInsertSchema(outreachMetrics).omit({
   id: true,
   createdAt: true,
@@ -134,3 +206,9 @@ export type PageView = typeof pageViews.$inferSelect;
 export type InsertPageView = z.infer<typeof insertPageViewSchema>;
 export type OutreachMetric = typeof outreachMetrics.$inferSelect;
 export type InsertOutreachMetric = z.infer<typeof insertOutreachMetricSchema>;
+export type Contact = typeof contacts.$inferSelect;
+export type InsertContact = z.infer<typeof insertContactSchema>;
+export type UpdateContact = z.infer<typeof updateContactSchema>;
+export type OutreachStatus = (typeof OUTREACH_STATUSES)[number];
+export type Persona = (typeof PERSONAS)[number];
+export type Source = (typeof SOURCES)[number];

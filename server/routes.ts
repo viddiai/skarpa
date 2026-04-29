@@ -7,6 +7,8 @@ import {
   insertContactMessageSchema,
   insertPageViewSchema,
   insertOutreachMetricSchema,
+  insertContactSchema,
+  updateContactSchema,
 } from "../shared/schema";
 
 // ── Admin auth middleware ────────────────────────────────────
@@ -197,6 +199,51 @@ export function registerApiRoutes(app: Express) {
       res.json({ success: true });
     } catch (error) {
       res.status(500).json({ error: "Failed to delete outreach metric" });
+    }
+  });
+
+  // ── Contacts (CRM) ──────────────────────────────────────
+
+  app.get("/api/admin/contacts", adminAuth, async (req, res) => {
+    try {
+      const status = typeof req.query.status === "string" ? req.query.status : undefined;
+      const list = await storage.getContacts(status ? { status } : undefined);
+      res.json(list);
+    } catch (error) {
+      console.error("getContacts error:", error);
+      res.status(500).json({ error: "Failed to fetch contacts" });
+    }
+  });
+
+  app.post("/api/admin/contacts", adminAuth, async (req, res) => {
+    try {
+      const data = insertContactSchema.parse(req.body);
+      const created = await storage.createContact(data);
+      res.json(created);
+    } catch (error: any) {
+      console.error("createContact error:", error);
+      res.status(400).json({ error: error.message || "Invalid contact data" });
+    }
+  });
+
+  app.patch("/api/admin/contacts/:id", adminAuth, async (req, res) => {
+    try {
+      const patch = updateContactSchema.parse(req.body);
+      const updated = await storage.updateContact(req.params.id, patch);
+      if (!updated) return res.status(404).json({ error: "Not found" });
+      res.json(updated);
+    } catch (error: any) {
+      console.error("updateContact error:", error);
+      res.status(400).json({ error: error.message || "Invalid contact data" });
+    }
+  });
+
+  app.delete("/api/admin/contacts/:id", adminAuth, async (req, res) => {
+    try {
+      await storage.deleteContact(req.params.id);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete contact" });
     }
   });
 

@@ -11,12 +11,16 @@ import {
   type InsertPageView,
   type OutreachMetric,
   type InsertOutreachMetric,
+  type Contact,
+  type InsertContact,
+  type UpdateContact,
   users,
   exitDiagnoses,
   buyerGuideRequests,
   contactMessages,
   pageViews,
   outreachMetrics,
+  contacts,
 } from "../shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
@@ -52,6 +56,13 @@ export interface IStorage {
   createOutreachMetric(metric: InsertOutreachMetric): Promise<OutreachMetric>;
   getOutreachMetrics(since?: Date): Promise<OutreachMetric[]>;
   deleteOutreachMetric(id: string): Promise<void>;
+
+  // Contacts (CRM)
+  createContact(contact: InsertContact): Promise<Contact>;
+  getContacts(filter?: { status?: string }): Promise<Contact[]>;
+  getContact(id: string): Promise<Contact | undefined>;
+  updateContact(id: string, patch: UpdateContact): Promise<Contact | undefined>;
+  deleteContact(id: string): Promise<void>;
 }
 
 // ── MemStorage (development fallback) ───────────────────────
@@ -204,6 +215,58 @@ export class MemStorage implements IStorage {
   async deleteOutreachMetric(id: string): Promise<void> {
     this.outreachMetricsMap.delete(id);
   }
+
+  // Contacts ─────────────────────────────────────────────────
+  private contactsMap = new Map<string, Contact>();
+
+  async createContact(contact: InsertContact): Promise<Contact> {
+    const id = randomUUID();
+    const now = new Date();
+    const entry: Contact = {
+      id,
+      email: contact.email,
+      companyName: contact.companyName ?? null,
+      website: contact.website || null,
+      industry: contact.industry ?? null,
+      revenueRange: contact.revenueRange ?? null,
+      employeeCount: contact.employeeCount ?? null,
+      ownerCeoPartnerName: contact.ownerCeoPartnerName ?? null,
+      linkedinUrl: contact.linkedinUrl || null,
+      persona: contact.persona ?? null,
+      icpScore: contact.icpScore ?? null,
+      source: contact.source ?? null,
+      outreachStatus: contact.outreachStatus ?? "new",
+      notes: contact.notes ?? null,
+      createdAt: now,
+      updatedAt: now,
+    };
+    this.contactsMap.set(id, entry);
+    return entry;
+  }
+
+  async getContacts(filter?: { status?: string }): Promise<Contact[]> {
+    const all = Array.from(this.contactsMap.values()).sort(
+      (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
+    );
+    if (filter?.status) return all.filter((c) => c.outreachStatus === filter.status);
+    return all;
+  }
+
+  async getContact(id: string): Promise<Contact | undefined> {
+    return this.contactsMap.get(id);
+  }
+
+  async updateContact(id: string, patch: UpdateContact): Promise<Contact | undefined> {
+    const existing = this.contactsMap.get(id);
+    if (!existing) return undefined;
+    const updated: Contact = { ...existing, ...patch, id, updatedAt: new Date() } as Contact;
+    this.contactsMap.set(id, updated);
+    return updated;
+  }
+
+  async deleteContact(id: string): Promise<void> {
+    this.contactsMap.delete(id);
+  }
 }
 
 // ── DatabaseStorage (Neon PostgreSQL via Drizzle) ───────────
@@ -326,6 +389,49 @@ class DatabaseStorage implements IStorage {
 
   async deleteOutreachMetric(id: string): Promise<void> {
     await db.delete(outreachMetrics).where(eq(outreachMetrics.id, id));
+  }
+
+  // Contacts ─────────────────────────────────────────────────
+
+  async createContact(contact: InsertContact): Promise<Contact> {
+    const [result] = await db
+      .insert(contacts)
+      .values({
+        ...contact,
+        website: contact.website || null,
+        linkedinUrl: contact.linkedinUrl || null,
+      })
+      .returning();
+    return result;
+  }
+
+  async getContacts(filter?: { status?: string }): Promise<Contact[]> {
+    if (filter?.status) {
+      return db
+        .select()
+        .from(contacts)
+        .where(eq(contacts.outreachStatus, filter.status))
+        .orderBy(desc(contacts.createdAt));
+    }
+    return db.select().from(contacts).orderBy(desc(contacts.createdAt));
+  }
+
+  async getContact(id: string): Promise<Contact | undefined> {
+    const [row] = await db.select().from(contacts).where(eq(contacts.id, id));
+    return row;
+  }
+
+  async updateContact(id: string, patch: UpdateContact): Promise<Contact | undefined> {
+    const [row] = await db
+      .update(contacts)
+      .set({ ...patch, updatedAt: new Date() })
+      .where(eq(contacts.id, id))
+      .returning();
+    return row;
+  }
+
+  async deleteContact(id: string): Promise<void> {
+    await db.delete(contacts).where(eq(contacts.id, id));
   }
 }
 

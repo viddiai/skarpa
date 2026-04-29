@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { adminFetch } from "@/lib/adminAuth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BookOpen, MessageSquare, FileText, Calendar } from "lucide-react";
+import { BookOpen, MessageSquare, FileText } from "lucide-react";
+import ContactsCRM from "./ContactsCRM";
 
 interface BuyerGuideReq {
   id: string;
@@ -61,6 +62,9 @@ export default function ContactsTab() {
 
   return (
     <div className="space-y-6">
+      {/* CRM contacts (manually managed prospects) */}
+      <ContactsCRM />
+
       {/* Säljarguiden downloads */}
       <Card>
         <CardHeader>
@@ -183,20 +187,6 @@ export default function ContactsTab() {
         </CardContent>
       </Card>
 
-      {/* Calendly placeholder */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base flex items-center gap-2">
-            <Calendar className="w-4 h-4" />
-            Bokade möten
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground text-center py-4">
-            Calendly-integration kommer snart
-          </p>
-        </CardContent>
-      </Card>
     </div>
   );
 }

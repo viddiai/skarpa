@@ -59,7 +59,11 @@ export default function SaljarguidenTack() {
             Vill du diskutera din situation med en M&A-rådgivare? Vi erbjuder
             ett kostnadsfritt och helt konfidentiellt inledande samtal.
           </p>
-          <a href="/#kontakt">
+          <a
+            href="https://calendly.com/johan-forsen-skarpa/30min"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <Button
               variant="outline"
               size="lg"
